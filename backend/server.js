@@ -1,11 +1,16 @@
 
+
 const express = require("express");
 const app = express();
 const PORT = 3000;
 app.use(express.json())
+const cors = require("cors");
+app.use(cors({
+  origin: "http://localhost:5173",
+}))
 const API_KEY = "016c04095f4e6190acc80c5bd3690ab6";
 const NAMES = ["Saim", "Zain", "Tazeem", "Ehtisham", "Zainab"];
-
+const authMiddleware = require("./auth");
 async function fetchData(url) {
   if (!url || typeof url !== "string") {
     throw new Error("Invalid URL");
@@ -33,7 +38,7 @@ app.get("/",(req,res)=>{
     res.send("Your server is running smoothly!")
 })
 
-app.post("/submit-name",async(req,res)=>{
+app.post("/submit-name",authMiddleware,async(req,res)=>{
     const { name } = req.body;
 
     if(!name || typeof name !=="string"){
@@ -59,7 +64,7 @@ app.post("/submit-name",async(req,res)=>{
     }
 });
 
-app.get("/gender/:name",async(req,res)=>{
+app.get("/gender/:name",authMiddleware,async(req,res)=>{
     const {name} = req.params;
 
     try{
@@ -72,7 +77,7 @@ app.get("/gender/:name",async(req,res)=>{
     }
 });
 
-app.get("/gender",async(req,res)=>{
+app.get("/gender",authMiddleware,async(req,res)=>{
     const {name} = req.query;
 
     if(!name || typeof name !=="string"){
@@ -91,7 +96,7 @@ app.get("/gender",async(req,res)=>{
 
 });
 
-app.get("/gender-data", async (req, res) => {
+app.get("/gender-data", authMiddleware, async (req, res) => {
   try {
     const results = [];
 
