@@ -8,7 +8,7 @@ class ErrorCollector{
     }
     
     getAllErrors(){
-        return this.error.join(" | ");
+        return this.error.join("\n");
     }
 
     clear(){
